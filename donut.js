@@ -22,11 +22,11 @@ function DonutShop (location, minimum, maximum, average) {
       total += perHourDemand; //hourly total
 
       // insert perHourDemand to row starting at cell index 1
-      row.insertCell(i).innerHTML = perHourDemand;
+      row.insertCell(i).innerHTML = perHourDemand.toFixed(0);
       console.log(perHourDemand);
     }
     // insert hourly total to row at last cell index number.
-    row.insertCell(numHours).innerHTML = total;
+    row.insertCell(numHours).innerHTML = total.toFixed(0);
     console.log(total);
   };
 }
