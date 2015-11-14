@@ -38,7 +38,7 @@ var southLakeUnionDonutShop = new DonutShop("South Lake Union", 9, 23, 6.33);
 var wedgewoodDonutShop = new DonutShop("Wedgewood", 2, 28, 1.25);
 var ballardDonutShop = new DonutShop("Ballard", 8, 58, 3.75);
 
-// hours of operation in an array
+// hours of operation in an array - table header data
 var hours = ["Location", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "Total"];
 
 // create table with location, hours of operation, and Total headings
