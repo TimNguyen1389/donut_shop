@@ -20,6 +20,25 @@
 <p>
   The table below simulates donut demand for each location. Donut demand calculations are based on the minimum number of customers per hour, the maximum number of customers per hours, and the average number of donuts purchased per customer at each location. Donut demand simulation is caculated per hour and total hours (7am - 6pm, 12 hours). The total number represent the number of donuts each location must make every day. Number of customers per hour are generated randomly. Refresh the browser to see the numbers changes.
 </p>
+<form id="location-form">
+<fieldset>
+  <legend>Add Location Form</legend>
+
+  <label for="location">Location: </label>
+  <input name="place" type="text">
+
+  <label for="minCust">Minimum customers per hour: </label>
+  <input name="minCust" type="text" size="5">
+
+  <label for="maxCust">Maximum customers per hour: </label>
+  <input name="maxCust" type="text" size="5">
+
+  <label for="averagePur">Average donuts purchased per customer: </label>
+  <input name="averagePur" type="text" size="5">
+
+  <button id="location-btn" type="submit">Add Location</button>
+</fieldset>
+</form>
 <h3>Donut Demand Simulation Table</h3>
   <script type="text/javascript" src="donut.js"></script>
 </body>
