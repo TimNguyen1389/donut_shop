@@ -33,7 +33,6 @@ function DonutShop (locale, minimum, maximum, average) {
 var hours = ["Location", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "Total"];
 
 // create table with location, hours of operation, and Total headings
-function makeTable(){
 var donutTable = document.createElement('table');
 var row = document.createElement('tr');
 hours.forEach(function(hour) {
@@ -44,8 +43,6 @@ hours.forEach(function(hour) {
 });
 // insert table to html body
 document.body.appendChild(donutTable);
-}
-makeTable();
 
 //instantiate new DonutShop location objects
 var downtownDS = new DonutShop("Downtown", 8, 43, 4.50);
@@ -62,13 +59,44 @@ donutShopArr.push(southLakeUnionDS);
 donutShopArr.push(capitolHillDS);
 donutShopArr.push(downtownDS);
 
-// to call DonutShop.donutDemand method for each object in array
+// call DonutShop.donutDemand method for each object in array
 function renderDonutShopArr(){
   for(var i = 0; i < donutShopArr.length; i++) {
     donutShopArr[i].donutDemand();
   }
 }
 renderDonutShopArr();
+
+// delete table rows
+function removeTableRow(){
+  var arrLength = donutShopArr.length + 1;
+  for(var i = 1; i < arrLength; i++){
+    var el = document.getElementsByTagName('table')[0];
+    el.deleteRow(1);
+  }
+}
+
+// populate drop-down list with location
+function selectLocation(){
+var select = document.getElementById("selectLocation");
+  for(var i = 0; i < donutShopArr.length; i++){
+    var opt = donutShopArr[i].locale;
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    select.appendChild(el);
+  }
+}
+selectLocation();
+
+// remove all locations from drop-down list
+function removeAllLoc(){
+  var arrLength = donutShopArr.length + 1;
+  for(var i = 1; i < arrLength; i++){
+    var el = document.getElementById("selectLocation");
+    el.remove(1);
+  }
+}
 
 // this function handles submission of new donut shop location form
 var handleLocationSubmit = function(event){
@@ -77,33 +105,29 @@ var handleLocationSubmit = function(event){
   var minCust = event.target.minCust.value;
   var maxCust = event.target.maxCust.value;
   var averagePur = event.target.averagePur.value;
+  var updatePlace = event.target.locations.value;
 
-// to clear form after add/update location
+// clear form after add/update location
 function clearForm(){
   event.target.place.value = null;
   event.target.minCust.value = null;
   event.target.maxCust.value = null;
   event.target.averagePur.value = null;
+  event.target.locations.value = "blank";
 }
 
-  if(!place  || (!minCust || isNaN(minCust)) || (!maxCust || isNaN(maxCust)) || (!averagePur || isNaN(averagePur))) {
+  if((!place && updatePlace === "blank") || (!minCust || isNaN(minCust)) || (!maxCust || isNaN(maxCust)) || (!averagePur || isNaN(averagePur))) {
     alert('Fields cannot be empty and Minimum, Maximum, and Average fields must be a number!');
+    return;
   }
   // match location name for updating
-  for(var i = 0; i < donutShopArr.length; i++){
-            if(place === donutShopArr[i].locale){
-              var match = 1;
-            }
-  }
-  // update location manimum, maximum and average if location matched
-  if (match === 1){
+  if (updatePlace !== "blank"){
     for(i = 0; i < donutShopArr.length; i++){
-      if(place === donutShopArr[i].locale){
+      if(updatePlace === donutShopArr[i].locale){
         donutShopArr[i].minimum = minCust;
         donutShopArr[i].maximum = maxCust;
         donutShopArr[i].average = averagePur;
-        document.getElementsByTagName('table')[0].remove(); //remove table
-        makeTable(); //create table and table headers
+        removeTableRow(); //remove table rows
         renderDonutShopArr(); //render rows and data
         clearForm(); //clear form
       }
@@ -113,7 +137,9 @@ function clearForm(){
     // add new location
     var newLocation = new DonutShop(place, minCust, maxCust, averagePur);
     newLocation.donutDemand(); //render new location row and data
+    removeAllLoc(); //remove all location from drop-down list
     donutShopArr.push(newLocation); //push new location object into array
+    selectLocation(); //populate drop-down list with locations
     clearForm(); //clear form
   }
 };
@@ -121,6 +147,7 @@ function clearForm(){
 // Form and button event listener
 var locationForm = document.getElementById('location-form');
 locationForm.addEventListener('submit', handleLocationSubmit);
+
 
 
 

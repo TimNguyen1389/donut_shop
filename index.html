@@ -19,17 +19,21 @@
 <p>Top Pot Donuts, with franchises all over town, needs help calculating the number of donuts each location must make every day from 7:00 am to 6:00 pm, a total of 12 hours.
 </p>
 <p>
-  The table below simulates donut demand for each location. Donut demand calculations are based on the minimum number of customers per hour, the maximum number of customers per hours, and the average number of donuts purchased per customer at each location. Donut demand simulation is caculated per hour and total hours (7am - 6pm, 12 hours). The total number represent the number of donuts each location must make every day. Number of customers per hour is number between the minimum and maximum customers per hour and is generated randomly.
+  The table below simulates donut demand for each location. Donut demand calculations are based on the minimum number of customers per hour, the maximum number of customers per hours, and the average number of donuts purchased per customer at each location. Donut demand simulation is caculated per hour and total hours (7am - 6pm, 12 hours). The total number represent the number of donuts each location must make every day. Number of customers per hour is a computer generated random number between the minimum and maximum number of customers per hour.
 </p>
-<p>
-  To update location minimum, maximum and average numbers, type in name of the location exactly as it appears in the table with new minimum, maximum and average numbers.
-</p>
+
 <form id="location-form">
 <fieldset>
   <legend><b>Add/Update Location Form</b></legend>
 
-  <label for="location">Location: </label>
+  <label for="location">Add a location: </label>
   <input name="place" type="text">
+
+  or
+
+  <select id="selectLocation" class="formBtn" name="locations">
+    <option value="blank" >Select a location to update</option>
+  </select><br><br>
 
   <label for="minCust">Minimum customers per hour: </label>
   <input name="minCust" type="number">
@@ -40,7 +44,7 @@
   <label for="averagePur">Average donuts purchased per customer: </label>
   <input name="averagePur" type="number">
 
-  <button id="location-btn" type="submit">Add/Update Location</button>
+  <button class="formBtn" type="submit">Add/Update Location</button>
 </fieldset>
 </form>
 <h3>Donut Demand Simulation Table</h3>
