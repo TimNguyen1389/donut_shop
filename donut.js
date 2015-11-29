@@ -2,33 +2,37 @@
 // maximum customers per hour, and average donuts per customer.
 function DonutShop (locale, minimum, maximum, average) {
   this.locale = locale;
-  this.minimum = minimum;
-  this.maximum = maximum;
-  this.average = average;
-  this.hourlyArr = []; //hourly array for bar chart
+  this.minimum = Number(minimum);
+  this.maximum = Number(maximum);
+  this.average = Number(average);
+  this.hourlyArr = []; // hourly array for bar chart
   this.donutDemand = function() {
     var perHourDemand;
-    var total = 0;
-    var numHours = hours.length - 1; //minus location cell
+    var numHours = hours.length - 2 // 7am - 6pm, 12 hours
     var table = document.getElementsByTagName('table')[0]; //get 1st table
     var row = table.insertRow(1); //insert row starting at index 1
     //insert location to row at cell index 0
     row.insertCell(0).innerHTML = this.locale;
 
     //loop through each hour from 7am - 6pm, 12 hours
-    for(var i = 1; i < numHours ; i++) {
-
+    for(var i = 0; i < numHours ; i++) {
       // donut demand per hour
-      perHourDemand = (Math.floor(Math.random() * (this.maximum - this.minimum)) + this.minimum) * this.average;
-      total += perHourDemand; //hourly total
+      perHourDemand = (Math.floor(Math.random() * (this.maximum - this.minimum + 1)) + this.minimum) * this.average;
+      //perHourDemand = (Math.floor(Math.random() * (2 - 1 + 1)) + 1) * 1;
       this.hourlyArr.push(perHourDemand.toFixed(0));
-
       // insert perHourDemand to row starting at cell index 1
-      row.insertCell(i).innerHTML = perHourDemand.toFixed(0);
+      row.insertCell(1).innerHTML = perHourDemand.toFixed(0);
     }
+
+    // hourly total
+    var total = this.hourlyArr.reduce(function(sum, hour){
+      return Number(sum) + Number(hour);
+    });
+
     // insert hourly total to row at last cell index number.
-    row.insertCell(numHours).innerHTML = total.toFixed(0);
-    //this.hourlyArr.push(total.toFixed(0));// remove comment if adding total to chart
+    row.insertCell(numHours + 1).innerHTML = total;
+
+    // this.hourlyArr.push(total);// remove comment if adding total to chart
   };
 }
 
@@ -57,39 +61,34 @@ var ballardDS = new DonutShop("Ballard", 8, 58, 3.75);
 
 // array to hold DonutShop objects
 var donutShopArr = [];
-donutShopArr.push(ballardDS);
-donutShopArr.push(wedgewoodDS);
-donutShopArr.push(southLakeUnionDS);
-donutShopArr.push(capitolHillDS);
-donutShopArr.push(downtownDS);
+donutShopArr.push(ballardDS, wedgewoodDS, southLakeUnionDS, capitolHillDS, downtownDS);
 
 // call DonutShop.donutDemand method for each object in array
 function renderDonutShopArr(){
-  for(var i = 0; i < donutShopArr.length; i++) {
-    donutShopArr[i].donutDemand();
-  }
+  donutShopArr.forEach(function(donutShop, index) {
+    donutShopArr[index].donutDemand();
+  })
 }
 renderDonutShopArr();
 
 // delete table rows
 function removeTableRow(){
-  var arrLength = donutShopArr.length + 1;
-  for(var i = 1; i < arrLength; i++){
+  donutShopArr.forEach(function() {
     var el = document.getElementsByTagName('table')[0];
     el.deleteRow(1);
-  }
+  })
 }
 
 // populate drop-down list with location
 function selectLocation(){
 var select = document.getElementById("selectLocation");
-  for(var i = 0; i < donutShopArr.length; i++){
-    var opt = donutShopArr[i].locale;
+  donutShopArr.forEach(function(donutShop, index){
+    var opt = donutShopArr[index].locale;
     var el = document.createElement("option");
     el.textContent = opt;
     el.value = opt;
     select.appendChild(el);
-  }
+  })
 }
 selectLocation();
 
@@ -106,9 +105,9 @@ function removeAllLoc(){
 var handleLocationSubmit = function(event){
   event.preventDefault();
   var place = event.target.place.value;
-  var minCust = event.target.minCust.value;
-  var maxCust = event.target.maxCust.value;
-  var averagePur = event.target.averagePur.value;
+  var minCust = Number(event.target.minCust.value);
+  var maxCust = Number(event.target.maxCust.value);
+  var averagePur = Number(event.target.averagePur.value);
   var updatePlace = event.target.locations.value;
   var elLegend = document.getElementById("dsLegend");
   var elChart = document.getElementById("dsChart");
@@ -129,11 +128,11 @@ function clearForm(){
   }
   // match location name for updating
   if (updatePlace !== "blank"){
-    for(i = 0; i < donutShopArr.length; i++){
-      if(updatePlace === donutShopArr[i].locale){
-        donutShopArr[i].minimum = minCust;
-        donutShopArr[i].maximum = maxCust;
-        donutShopArr[i].average = averagePur;
+      donutShopArr.forEach(function(donutShop, index) {
+      if(updatePlace === donutShopArr[index].locale){
+        donutShopArr[index].minimum = minCust;
+        donutShopArr[index].maximum = maxCust;
+        donutShopArr[index].average = averagePur;
         removeTableRow(); //remove table rows
         // reset hourlyArr for chart
         donutShopArr.forEach(function(donutShop){
@@ -145,7 +144,7 @@ function clearForm(){
         renderChart();
         clearForm(); //clear form
       }
-    }
+    })
   }
   else {
     // add new location
@@ -172,8 +171,7 @@ function renderChart() {
 
   var ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
   var data = {
-      labels: ["7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
-               "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"],
+      labels: hours.slice(1, 13),
       datasets: []
       };
 
@@ -187,12 +185,11 @@ function renderChart() {
     };
 
   var colors = ["#0000FF", "#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0",
-                "#7FFF00", "#D2691E", "#FF7F50", "#6495ED", "#DC143C"];
+                "#7FFF00", "#FCF744", "#FF7F50", "#6495ED", "#DC143C"];
 
-  var i = 0;
-  donutShopArr.forEach(function(donutShop){
-    var color = colors[i];
-    i++;
+  donutShopArr.forEach(function(donutShop, index){
+    var color = colors[index];
+
   //var color = '#' + (Math.random() * 0xFFFFFF<<0).toString(16); //colors not always disticnt
     var newDataSet = new Dataset(donutShop.locale, color, color, color, color, donutShop.hourlyArr);
     data.datasets.push(newDataSet);
@@ -215,6 +212,3 @@ function renderChart() {
 
 }
 renderChart();
-
-
-
